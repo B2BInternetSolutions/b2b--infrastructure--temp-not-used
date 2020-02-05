@@ -27,10 +27,10 @@ EOF
 
 cat >> /etc/hosts << EOF
 {
-  10.36.1.184 control.example.com control
-  10.36.1.140 worker1.example.com worker1
-  10.36.1.151 worker2.example.com worker2
-  10.36.1.155 worker3.example.com worker3
+  10.36.1.184 ip-10-36-1-184.eu-west-1.compute.internal control
+  10.36.1.140 ip-10-36-1-140.eu-west-1.compute.internal worker1
+  10.36.1.151 ip-10-36-1-151.eu-west-1.compute.internal worker2
+  10.36.1.155 ip-10-36-1-155.eu-west-1.compute.internal worker3
 }
 EOF
 
@@ -40,17 +40,18 @@ systemctl daemon-reload
 systemctl restart docker
 systemctl enable docker
 
-if [[ $HOSTNAME = control.example.com ]]
+# Check to see if this is the control node.
+if [[ $HOSTNAME = ip-10-36-1-184.eu-west-1.compute.internal ]]
 then
   firewall-cmd --add-port 6443/tcp --permanent
   firewall-cmd --add-port 2379-2380/tcp --permanent
   firewall-cmd --add-port 10250/tcp --permanent
   firewall-cmd --add-port 10251/tcp --permanent
   firewall-cmd --add-port 10252/tcp --permanent
-fi
-
-if echo $HOSTNAME | grep worker
-then
+#fi
+else
+#if echo $HOSTNAME | grep worker
+#then
   firewall-cmd --add-port 10250/tcp --permanent
   firewall-cmd --add-port 30000-32767/tcp --permanent
 fi
